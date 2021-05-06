@@ -1,0 +1,36 @@
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="github-markdown.css">
+  <style>
+    .markdown-body {
+      box-sizing: border-box;
+      min-width: 200px;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 45px;
+    }
+
+    @media (max-width: 767px) {
+      .markdown-body {
+        padding: 15px;
+      }
+    }
+  </style>
+  <script type="text/javascript" src="data.json"></script>  //提及指令碼源中json檔案的路徑以及javascript檔案。
+</head>
+<body>
+  <article class="markdown-body">
+    <h1>JSON Test - 0507</h1>
+    <button onlick="jsontest();">按我</button>
+  </article>
+</body>
+<script type="text/javascript">
+  //從json檔案中獲取物件
+  function jsontest() {
+    var mydata = JSON.parse(data);
+    alert(mydata[0].name);
+    alert(mydata[0].age);
+    alert(mydata[1].name);
+    alert(mydata[1].age);
+}
+</script>
