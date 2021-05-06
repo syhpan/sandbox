@@ -16,16 +16,21 @@
       }
     }
   </style>
-  <script type="text/javascript" src="data.json"></script>  //提及指令碼源中json檔案的路徑以及javascript檔案。
+  <script type="text/javascript" src="data.json"></script>
 </head>
 <body>
   <article class="markdown-body">
     <h1>JSON Test - 0507</h1>
     <button onlick="jsontest();">按我</button>
+    <button onlick="square();">測試用</button>
   </article>
 </body>
 <script type="text/javascript">
+   //提及指令碼源中json檔案的路徑以及javascript檔案。
   //從json檔案中獲取物件
+  function square() {
+    alert("這是square");
+}
   function jsontest() {
     var mydata = JSON.parse(data);
     alert(mydata[0].name);
