@@ -1,10 +1,12 @@
 <script src="https://unpkg.com/vue@3"></script>
 
+<body>
 <template>
   <p v-for="user in users" :key="user.id">
     {{user.name}}
   </p>
 </template>
+</body>
 
 <script>
 import userData from './assets/users.json'
