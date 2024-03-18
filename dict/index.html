@@ -1,0 +1,69 @@
+<meta charset="UTF-8">
+<body >
+<h1>卡社布農語詞典</h1>
+<!-- Vue.js App  -->
+<div id="app" class="vue-app">
+<div class="navbar">
+<input type="text" v-model="input" @keyup="lookup(input);" placeholder="Search">
+<p>連結測試： <a v-bind:href="'?q='+input">{{input}}</a></p>
+<table class="result" v-for="item in items">
+<tr><td>{{item.lx}}</td><td>{{item.gn}}</td></tr>
+</table>
+</div>
+<div class="content"><h2>{{lx}}</h2><hr><p>{{gn}}</p><td>{{lv}}</td></div>
+</div>
+</body>
+
+<!--link rel="stylesheet" href="style.css"-->
+<style>
+div{padding: 10px;}
+table{padding: 2px; border: solid 1px lightblue;}
+h1{background: gold;}
+.navbar{background: lightgray; width: 15%; float:left;}
+.result{background: white; width: 100%;}
+.content{background: lightblue; width: 75%; float:right;}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="data.json.js"></script>
+<script>
+var app = new Vue({
+    el: '#app',
+    data: {
+        input: "",
+        items: [],
+        lx: data[0].lx,
+        gn: data[0].gn,
+        lv: data[0].lv
+    },
+    created: function() {
+        let params = new URLSearchParams(document.location.search);
+        let q = params.get("q");
+        this.input = q;
+        this.lookup(q);
+    },
+    methods: {
+        lookup: function(input) {
+            this.items = [];
+            var counter = 0;
+            for (var i = 0; i < data.length; i++) {
+                if (counter > 20) {
+                    break;
+                } //顯示上限
+                if (data[i].lx.search(input) > -1 || data[i].gn.search(input) > -1) {
+                    this.items.push(data[i]);
+                    counter++;
+                }
+                if (data[i].lx == input) {
+                    this.assign(i);
+                }
+            }
+        },
+        assign: function(ind) {
+            this.lx = data[ind].lx;
+            this.gn = data[ind].gn;
+            this.lv = data[ind].lv;
+        }
+    }
+});
+</script>
