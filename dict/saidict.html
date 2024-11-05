@@ -1,0 +1,107 @@
+<link rel="stylesheet" href="avenir-white.css">
+<script src="js/vue/vue.js"></script>
+
+<header>
+    <h1 class="ui header">ka'alSaySiyat pinayaka:i' ka kina:at<div class="sub header">賽夏語辭典</div></h1>
+</header>
+
+<!-- Vue.js App  -->
+<div class="vue-app" id="app">
+
+    <form name="tshiautuann" action="" method="get">
+        <h3>類型</h3>
+        <input type="radio" name="lui" value="lx"><span>用賽夏語查詞目</span>
+        <input type="radio" name="lui" value="xv"><span>用賽夏語查用例</span>
+        <input type="radio" name="lui" value="dn"><span>用華語查釋義</span>
+        <input type="radio" name="lui" value="xn"><span>用華語查用例</span><br/>
+    </form>
+    <span class="fuzzy" v-bind:title="checkbox_msg">
+    模糊搜尋
+    <input type="checkbox" v-model="fuzzy">
+    </span>
+    <h3>搜尋</h3>
+    <input type="search" placeholder="輸入搜尋辭典文字">
+    <button type="submit">搜尋</button>
+
+
+    <div class="dict">
+        <div v-for="(entry, idx) in filterGeneric" class="item">
+        <div class="headword">[[ entry.headword ]]</div>
+        <span class="page">[[ entry["ori-page"] ]]</span>
+        <p class="definition">[[ entry["definition"] ]]</p>
+        <p class="ori-def">[[ entry["ori-def"] ]]</p>
+    </div>
+
+<!-- ######## Vue.js #######-->
+<script>
+    var app = new Vue({
+        delimiters: ['[[', ']]'],
+
+        el: '#app',
+        data() {
+            return {
+                entries: [],
+                search: {
+                    headword: "",
+                    headword_norm: "",
+                    ori: "",
+                    ori_norm: "",
+                    chinese: "",
+                },
+                exact: false,
+                checkbox_msg: "Uncheck to ignore diacritics and case",
+            }
+        },
+        created() {
+            this.$http.get('https://mirusausiliq.com/facidolproject/pages/languages/saisiyat/dictionary/saisiyat.json').then(function (data) {
+                this.entries = data.body;
+            });
+        },
+        computed: {
+            filterGeneric: function () {
+                if (this.search.headword != "") return this.filterLemma;
+                if (this.search.ori != "") return this.filterDef;
+                if (this.search.chinese != "") return this.filterZhDef;
+
+                return this.entries.slice(0, 5);
+            },
+            filterLemma: function () {
+                return this.entries.filter(entry => {
+                    if (this.exact)
+                        return entry.headword.includes(this.search.headword);
+                    else
+                        return entry.headword_norm.includes(this.search.headword_norm);
+                });
+            },
+            filterDef: function () {
+                return this.entries.filter(entry => {
+                    if (this.exact)
+                        return entry['ori-def'].includes(this.search.ori);
+                    else
+                        return entry['ori-def_norm'].includes(this.search.ori_norm);
+                });
+            },
+            filterZhDef: function () {
+                return this.entries.filter(entry => {
+                    return entry['definition'].includes(this.search.chinese);
+                });
+            }
+        },
+        filter: {
+            normStr: function(str) {
+                return str.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            }
+        },
+        watch: {
+            "search.headword": function() {
+                this.search.headword_norm = this.search.headword.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            },
+            "search.ori": function() {
+                this.search.ori_norm = this.search.ori.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            },
+        }
+    })
+</script>
+
+</div>
+<!-- Vue.js App End -->
