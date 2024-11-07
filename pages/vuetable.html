@@ -116,7 +116,7 @@
     },
     mounted() {
       // Load data from JSON file when component is mounted
-      fetch('https://syhpan.github.io/test/data/users.json')
+      fetch('https://syhpan.github.io/sandbox/data/users.json')
         .then(response => response.json())
         .then(data => {
           this.users = data;
