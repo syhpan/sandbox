@@ -1,21 +1,130 @@
-<script src="https://unpkg.com/vue@3"></script>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue.js Searchable Table with Fuzzy Search Option</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    input[type="text"] {
+      margin-bottom: 10px;
+      padding: 5px;
+      width: 100%;
+    }
+    .options {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
 <body>
-<template>
-  <p v-for="user in users" :key="user.id">
-    {{user.name}}
-  </p>
-</template>
-</body>
+
+<div id="app">
+  <h2>Searchable Table with Fuzzy Search Option</h2>
+  
+  <!-- Radio options for search mode -->
+  <div class="options">
+    <label>
+      <input type="radio" value="name" v-model="searchMode"> Search by Name
+    </label>
+    <label>
+      <input type="radio" value="email" v-model="searchMode"> Search by Email
+    </label>
+  </div>
+  
+  <!-- Fuzzy search checkbox -->
+  <div class="options">
+    <label>
+      <input type="checkbox" v-model="fuzzySearch"> Enable Fuzzy Search
+    </label>
+  </div>
+
+  <!-- Search input -->
+  <input v-model="search" :placeholder="`Search by ${searchMode}`">
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Age</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="user in filteredUsers" :key="user.id">
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.age }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 <script>
-import userData from './assets/users.json'
-
-export default {
-  data() {
-    return {
-      users: userData,
-    };
-  },
-};
+  new Vue({
+    el: '#app',
+    data: {
+      search: '',
+      searchMode: 'name', // Default search mode
+      fuzzySearch: false, // Enable or disable fuzzy search
+      users: [] // Will be populated from JSON
+    },
+    computed: {
+      filteredUsers() {
+        const searchTerm = this.search.toLowerCase();
+        
+        return this.users.filter(user => {
+          const field = this.searchMode === 'name' ? user.name : user.email;
+          const fieldValue = field.toLowerCase();
+          
+          // Check for fuzzy search or exact match
+          if (this.fuzzySearch) {
+            return this.fuzzyMatch(searchTerm, fieldValue);
+          } else {
+            return fieldValue.includes(searchTerm);
+          }
+        });
+      }
+    },
+    methods: {
+      // Simple fuzzy match function
+      fuzzyMatch(search, text) {
+        let searchIndex = 0;
+        
+        for (let i = 0; i < text.length; i++) {
+          if (text[i] === search[searchIndex]) {
+            searchIndex++;
+          }
+          if (searchIndex === search.length) {
+            return true;
+          }
+        }
+        return false;
+      }
+    },
+    mounted() {
+      // Load data from JSON file when component is mounted
+      fetch('https://syhpan.github.io/test/data/users.json')
+        .then(response => response.json())
+        .then(data => {
+          this.users = data;
+        })
+        .catch(error => console.error('Error loading JSON data:', error));
+    }
+  });
 </script>
+
+</body>
+</html>
