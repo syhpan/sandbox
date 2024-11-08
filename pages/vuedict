@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue Dictionary App</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 1em;
+    }
+    .definition {
+      background-color: #f0f0f0;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Dictionary App</h1>
+    <input type="text" v-model="searchWord" placeholder="Type a word..." @keyup.enter="getDefinition" />
+    <button @click="getDefinition">Search</button>
+
+    <div v-if="definition" class="definition">
+      <h2>{{ searchWord }}</h2>
+      <p>{{ definition }}</p>
+    </div>
+    <div v-else-if="searchWord && !definitionFound" class="definition">
+      <p>Sorry, no definition found for "{{ searchWord }}".</p>
+    </div>
+  </div>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        searchWord: '',
+        definition: '',
+        definitionFound: true,
+        dictionary: {
+          apple: 'A round fruit of a tree of the rose family, which typically has thin green or red skin and crisp flesh.',
+          banana: 'A long curved fruit that grows in clusters and has soft pulpy flesh and yellow skin when ripe.',
+          orange: 'A round juicy citrus fruit with a tough bright reddish-yellow rind.',
+          // Add more words and definitions here
+        }
+      },
+      methods: {
+        getDefinition() {
+          const word = this.searchWord.toLowerCase();
+          if (this.dictionary[word]) {
+            this.definition = this.dictionary[word];
+            this.definitionFound = true;
+          } else {
+            this.definition = '';
+            this.definitionFound = false;
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
