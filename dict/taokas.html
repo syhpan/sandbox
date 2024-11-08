@@ -72,7 +72,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="entry in visibleUsers" :key="entry.id">
+      <tr v-for="entry in visibleEntries" :key="entry.id">
         <td>{{ entry.lexicon }}</td>
         <td>{{ entry.gloss }}</td>
         <td>{{ entry.category }}</td>
@@ -81,7 +81,7 @@
   </table>
 
   <!-- Show More button -->
-  <button v-if="visibleUsers.length < filteredUsers.length" @click="showMore" class="show-more">
+  <button v-if="visibleEntries.length < filteredEntries.length" @click="showMore" class="show-more">
     Show More
   </button>
 </div>
@@ -97,7 +97,7 @@
       visibleCount: 20 // Initial number of entries to display
     },
     computed: {
-      filteredUsers() {
+      filteredEntries() {
         const searchTerm = this.search.toLowerCase();
         
         return this.entries.filter(entry => {
@@ -112,9 +112,9 @@
           }
         });
       },
-      visibleUsers() {
+      visibleEntries() {
         // Return only the number of entries specified by visibleCount
-        return this.filteredUsers.slice(0, this.visibleCount);
+        return this.filteredEntries.slice(0, this.visibleCount);
       }
     },
     methods: {
