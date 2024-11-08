@@ -27,6 +27,15 @@
     .options {
       margin-bottom: 10px;
     }
+    .show-more {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -63,13 +72,18 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="entry in filteredUsers" :key="entry.id">
+      <tr v-for="entry in visibleUsers" :key="entry.id">
         <td>{{ entry.lexicon }}</td>
         <td>{{ entry.gloss }}</td>
         <td>{{ entry.category }}</td>
       </tr>
     </tbody>
   </table>
+
+  <!-- Show More button -->
+  <button v-if="visibleUsers.length < filteredUsers.length" @click="showMore" class="show-more">
+    Show More
+  </button>
 </div>
 
 <script>
@@ -79,7 +93,8 @@
       search: '',
       searchMode: 'lexicon', // Default search mode
       fuzzySearch: false, // Enable or disable fuzzy search
-      entries: [] // Will be populated from JSON
+      entries: [], // Will be populated from JSON
+      visibleCount: 20 // Initial number of entries to display
     },
     computed: {
       filteredUsers() {
@@ -96,6 +111,10 @@
             return fieldValue.includes(searchTerm);
           }
         });
+      },
+      visibleUsers() {
+        // Return only the number of entries specified by visibleCount
+        return this.filteredUsers.slice(0, this.visibleCount);
       }
     },
     methods: {
@@ -112,6 +131,10 @@
           }
         }
         return false;
+      },
+      showMore() {
+        // Increase visibleCount by 20 to load more entries
+        this.visibleCount += 20;
       }
     },
     mounted() {
